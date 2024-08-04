@@ -1,11 +1,29 @@
-import { StatusBar } from "expo-status-bar"
-import { Text, View } from "react-native"
+import * as React from "react"
+import { NavigationContainer } from "@react-navigation/native"
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import SingUpScreen from "./src/screens/SingUpScreen"
+import SingInScreen from "./src/screens/SingInScreen"
 
-export default function App() {
+export type RootStackParamList = {
+  SignUpScreen: undefined
+  SignInScreen: undefined
+}
+
+const Stack = createNativeStackNavigator<RootStackParamList>()
+
+const App = () => {
   return (
-    <View className="flex-1 items-center justify-center">
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false
+        }}
+      >
+        <Stack.Screen name="SignUpScreen" component={SingUpScreen} />
+        <Stack.Screen name="SignInScreen" component={SingInScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }
+
+export default App

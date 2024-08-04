@@ -14,7 +14,7 @@ export default [
   {
     rules: {
       "react/react-in-jsx-scope": "off",
-      "eqeqeq": ["error", "always"]
+      eqeqeq: ["error", "always"]
     }
   }
 ]
