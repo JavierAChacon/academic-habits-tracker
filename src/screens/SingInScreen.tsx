@@ -7,6 +7,7 @@ import { RootStackParamList } from "../../App"
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import FormInputController from "../components/FormInputController"
+import { supabase } from "../lib/supabase"
 
 export const signInSchema = yup.object({
   email: yup
@@ -32,8 +33,13 @@ export default function SignInScreen() {
     resolver: yupResolver(signInSchema)
   })
 
-  const submit = (data: SignInData) => {
-    console.log(data)
+  const submit = async (dataForm: SignInData) => {
+    const { email, password } = dataForm
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password
+    })
+    console.log(data, error)
   }
 
   return (
@@ -52,6 +58,9 @@ export default function SignInScreen() {
         placeholder="Password"
         control={control as unknown as Control<FieldValues>}
         errors={errors}
+        props={{
+          secureTextEntry: true
+        }}
       />
 
       <Button title="Submit" onPress={handleSubmit(submit)} />

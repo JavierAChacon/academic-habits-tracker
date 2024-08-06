@@ -7,6 +7,7 @@ import { RootStackParamList } from "../../App"
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import FormInputController from "../components/FormInputController"
+import { supabase } from "../lib/supabase"
 
 const signUpSchema = yup.object({
   firstName: yup.string().required("First name is required").trim(),
@@ -31,6 +32,21 @@ type SignUpData = yup.InferType<typeof signUpSchema>
 const SignUpScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
+  const submit = async (dataForm: SignUpData) => {
+    const { email, password, firstName, lastName } = dataForm
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          firstName,
+          lastName
+        }
+      }
+    })
+    console.log(data, error)
+  }
+
   const {
     control,
     handleSubmit,
@@ -40,10 +56,6 @@ const SignUpScreen = () => {
   } = useForm({
     resolver: yupResolver(signUpSchema)
   })
-
-  const submit = (data: SignUpData) => {
-    console.log(data)
-  }
 
   return (
     <View className="flex-1 items-center justify-center">
