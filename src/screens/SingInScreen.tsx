@@ -8,6 +8,7 @@ import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import FormInputController from "../components/FormInputController"
 import { supabase } from "../lib/supabase"
+import { useState } from "react"
 
 export const signInSchema = yup.object({
   email: yup
@@ -23,6 +24,8 @@ type SignInData = yup.InferType<typeof signInSchema>
 export default function SignInScreen() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
 
+  const [errorMessage, setErrorMessage] = useState("")
+
   const {
     control,
     handleSubmit,
@@ -35,17 +38,24 @@ export default function SignInScreen() {
 
   const submit = async (dataForm: SignInData) => {
     const { email, password } = dataForm
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password
     })
-    console.log(data, error)
+
+    if (error) {
+      setErrorMessage(error.message)
+    } else {
+      navigation.navigate("HomeScreen")
+    }
   }
 
   return (
     <View className="flex-1 items-center justify-center">
       <StatusBar style="auto" />
-
+      {errorMessage && (
+        <Text className="mb-2 text-lg text-red-500">{errorMessage}</Text>
+      )}
       <FormInputController
         name="email"
         placeholder="Email"
